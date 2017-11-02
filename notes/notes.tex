@@ -1,7 +1,10 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 \usepackage[a4paper, top=1in, bottom=1in, left=1in, right=1in]{geometry} 
-
+\usepackage{graphicx}
+\setlength\parindent{0pt} % Removes all indentation from paragraphs - comment this line for an assignment with lots of text
+\usepackage[]{algorithm2e}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
 
 \title{\textbf{Machine Learning Note}}
 \author{Chauncey Liu}
@@ -17,18 +20,73 @@
  
 \section{Introduction}
 \subsection{What is Machine Learning}
-\subsection{Supervise Learning}
+A computer program is said to learn from experience E with respect to some task T and some performance measure P, if its performance on T, as measured by P, improves with experience E.
+
+\subsection{Supervised Learning}
+Supervised learning is a type of machine learning algorithm that uses a known dataset (called the training dataset) to make predictions.\\
+
+Supervised Learning: "Right" answers given \\
+Regression: Predict continuous valued output \\
+Classification: Disrete valued output \\
+
 \subsection{Unsupervised Learning}
+Unsupervised learning is a type of machine learning algorithm used to draw inferences from datasets consisting of input data without labeled responses.\\
 
 \section{Linear Regression with One Variable}
 \subsection{Model and Cost Function}
 \subsubsection{Model Representation}
+\begin{figure}[h]
+\centering
+\includegraphics[width=6cm]{pic/pic2.png}
+\end{figure}
+How do we represent hypothesis h? Use methods like regression to generate a classifier.
 \subsubsection{Cost Function}
+Hypothesis: $h_\theta(x) = \theta_0 + \theta_1 x$, where $\theta_i$ are parameters.
+Choose $\theta_0$, $\theta_1$ so that $h_\theta(x)$ is close to $y$ for our trainig examples(x, y). \\
+
+We have cost function using squared error function: 
+$$h_\theta(x^{(i)}) = \theta_0 + \theta_1 x^{(i)}$$
+$$J(\theta_0, \theta_1) = \frac{1}{2m} \sum_{i=1}^{m}(h_\theta(x^{(i)}) - y^{(i)})^2$$
+$$\arg\min_{\theta_0, \theta_1}J(\theta_0, \theta_1) $$
+
 \subsection{Parameter Learning}
 \subsubsection{Gradient Descent}
-\subsubsection{Gradient Descent Intuition}
-\subsubsection{Gradient Descent For Linear Regression}
+Have some function $J(\theta_0, \theta_1)$, want $\arg\min_{\theta_0, \theta_1}J(\theta_0, \theta_1)$
 
+Outline: \\
+
+1. Start with some $\theta_0, \theta_1$, (say $\theta_0 = 0, \theta_1 = 0)$ \\
+2. Keep changing $\theta_0, \theta_1$ to reduce $J(\theta_0, \theta_1)$ until we hopefuly end up at a minimum. \\
+
+\textbf{Gradient descent algorithm}\\
+repeat until convergence \{\\
+$\tab \theta_j := \theta_j - \alpha \frac{\partial}{\partial \theta_j}J(\theta_0, \theta_1) $ (for j = 0, 1)\\
+\}
+
+\subsubsection{Gradient Descent Intuition}
+repeat until convergence \{\\
+$\tab \theta_j := \theta_j - \alpha \frac{\partial}{\partial \theta_j}J(\theta_0, \theta_1) $ (simultaneously update j = 0 and j = 1)\\
+\}\\
+
+$\alpha$ is the learning rate. \\
+1. If $\alpha$ is too small, gradient descent can be slow. \\
+2. If $\alpha$ is too large, gradient descent can overshoot the minimum. It may fail to converge, or even diverge. \\
+3. As we approach a local minimum, gradient descent will automatically take smaller steps. So, no need to decrease $\alpha$ over time. \\
+
+\subsubsection{Gradient Descent For Linear Regression}
+\textbf{Linear Regression Model}
+$h_\theta(x) = \theta_0 + \theta_1 x$
+$$J(\theta_0, \theta_1) = \frac{1}{2m} \sum_{i=1}^{m}(h_\theta(x^{(i)}) - y^{(i)})$$
+$$\frac{\partial}{\partial \theta_j}J(\theta_0, \theta_1) = \frac{\partial}{\partial \theta_j} \frac{1}{2m} \sum_{i=1}^{m}(h_\theta(x^{(i)}) - y^{(i)})^2$$
+$$ = \frac{\partial}{\partial \theta_j} \frac{1}{2m} \sum_{i=1}^{m}(\theta_0 + \theta_1 x^{(i)} - y^{(i)})^2$$
+$$j = 0: \frac{\partial}{\partial \theta_0}J(\theta_0, \theta_1) = \frac{1}{m} \sum_{i=1}^{m}(h_\theta(x^{(i)} - y^{(i)}))$$
+$$j = 1: \frac{\partial}{\partial \theta_1}J(\theta_0, \theta_1) = \frac{1}{m} \sum_{i=1}^{m}(h_\theta(x^{(i)} - y^{(i)})) x^{(i)}$$
+
+\textbf{Gradient descent algorithm}\\
+repeat until convergence \{\\
+$\theta_0 := \theta_0 - \alpha \frac{1}{m} \sum_{i=1}^{m}(h_\theta(x^{(i)} - y^{(i)})) $ \\
+$\theta_0 := \theta_0 - \alpha \frac{1}{m} \sum_{i=1}^{m}(h_\theta(x^{(i)} - y^{(i)})) x^{(i)} $ \\
+\}\\
 
 \section{Linear Regression with Multiple Variables}
 \subsection{Multivariate Linear Regression}
@@ -77,7 +135,7 @@
 \subsection{Cost Function and Backpropagation}
 \subsubsection{Cost Function}
 \subsubsection{Backpropagation Algorithm}
-\subsubsection{Backpropagation Intution}
+\subsubsection{Backpropagation Intuition}
 \subsection{Backpropagration in Practice}
 \subsubsection{Implementation Note: Unrolling Parameters}
 \subsubsection{Gradient Checking}
