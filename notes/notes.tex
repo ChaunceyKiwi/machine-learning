@@ -4,7 +4,11 @@
 \usepackage{graphicx}
 \setlength\parindent{0pt} % Removes all indentation from paragraphs - comment this line for an assignment with lots of text
 \usepackage[]{algorithm2e}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
 \newcommand\tab[1][1cm]{\hspace*{#1}}
+\newcommand{\vect}[1]{\boldsymbol{#1}}
 
 \title{\textbf{Machine Learning Note}}
 \author{Chauncey Liu}
@@ -79,25 +83,122 @@ $h_\theta(x) = \theta_0 + \theta_1 x$
 $$J(\theta_0, \theta_1) = \frac{1}{2m} \sum_{i=1}^{m}(h_\theta(x^{(i)}) - y^{(i)})$$
 $$\frac{\partial}{\partial \theta_j}J(\theta_0, \theta_1) = \frac{\partial}{\partial \theta_j} \frac{1}{2m} \sum_{i=1}^{m}(h_\theta(x^{(i)}) - y^{(i)})^2$$
 $$ = \frac{\partial}{\partial \theta_j} \frac{1}{2m} \sum_{i=1}^{m}(\theta_0 + \theta_1 x^{(i)} - y^{(i)})^2$$
-$$j = 0: \frac{\partial}{\partial \theta_0}J(\theta_0, \theta_1) = \frac{1}{m} \sum_{i=1}^{m}(h_\theta(x^{(i)} - y^{(i)}))$$
-$$j = 1: \frac{\partial}{\partial \theta_1}J(\theta_0, \theta_1) = \frac{1}{m} \sum_{i=1}^{m}(h_\theta(x^{(i)} - y^{(i)})) x^{(i)}$$
+
+$j = 0: \frac{\partial}{\partial \theta_0}J(\theta_0, \theta_1) = \frac{1}{m} \sum_{i=1}^{m}(h_\theta(x^{(i)} - y^{(i)}))$\\
+$j = 1: \frac{\partial}{\partial \theta_1}J(\theta_0, \theta_1) = \frac{1}{m} \sum_{i=1}^{m}(h_\theta(x^{(i)} - y^{(i)})) x^{(i)}$\\
 
 \textbf{Gradient descent algorithm}\\
 repeat until convergence \{\\
-$\theta_0 := \theta_0 - \alpha \frac{1}{m} \sum_{i=1}^{m}(h_\theta(x^{(i)} - y^{(i)})) $ \\
-$\theta_0 := \theta_0 - \alpha \frac{1}{m} \sum_{i=1}^{m}(h_\theta(x^{(i)} - y^{(i)})) x^{(i)} $ \\
+\tab $\theta_0 := \theta_0 - \alpha \frac{1}{m} \sum_{i=1}^{m}(h_\theta(x^{(i)} - y^{(i)})) $ \\
+\tab $\theta_1 := \theta_1 - \alpha \frac{1}{m} \sum_{i=1}^{m}(h_\theta(x^{(i)} - y^{(i)})) x^{(i)} $ \\
 \}\\
+
+\newpage
 
 \section{Linear Regression with Multiple Variables}
 \subsection{Multivariate Linear Regression}
 \subsubsection{Multiple Features}
+Previously: $h_\theta = \theta_0 + \theta_1 x$ \\
+Now: $h_\theta = \theta_0 + \theta_1 x_1 + \theta_2 x_2 + ... + \theta_n x_n$ ($x_0 = 1$) \\
+
+$\vect{x} = \begin{bmatrix}
+x_0 \\ x_1 \\ x_2 \\ \vdots \\ x_n 
+\end{bmatrix} \in \mathbb{R}^{n+1}
+\tab
+\vect{\theta} = \begin{bmatrix}
+\theta_0 \\ \theta_1 \\ \theta_2 \\ \vdots \\ \theta_n 
+\end{bmatrix} \in \mathbb{R}^{n+1} \\\\
+\tab$
+
+$h_\theta = \vect{\theta}^T \vect{x}$\\
+Multivariate linear regression. 
+
 \subsubsection{Gradient Descent for Multiple Variables}
+Cost function:\\
+$J(\vect{\theta}) = \frac{1}{2m} \sum_{i=1}^{m}(h_{\vect{\theta}}(\vect{x}^{(i)}) - y^{(i)})^2$\\
+
+New Algorithm:\\
+repeat until convergence \{\\
+\tab $\theta_j := \theta_j - \alpha \frac{1}{m} \sum_{i=1}^{m}(h_\theta(x^{(i)} - y^{(i)})) x_{j}^{(i)}$ (simultaneously update $\theta_j$ for j = 0, 1, ..., n) \\
+\}\}\\
+
+$\theta_0 := \theta_0 - \alpha \frac{1}{m} \sum_{i=1}^{m}(h_\theta(x^{(i)} - y^{(i)})) x_{0}^{(i)}$ \\
+$\theta_1 := \theta_1 - \alpha \frac{1}{m} \sum_{i=1}^{m}(h_\theta(x^{(i)} - y^{(i)})) x_{1}^{(i)}$ \\
+$\theta_2 := \theta_2 - \alpha \frac{1}{m} \sum_{i=1}^{m}(h_\theta(x^{(i)} - y^{(i)})) x_{2}^{(i)}$ \\
+...
+
 \subsubsection{Gradient in Practice I - Feature Scaling}
+1. Make sure features are on a similar scale. \\
+2. Get every feature into approximately a $-1 \le x_i \le 1$ range. \\
+3. Replace $x_i$ with $x_i - \mu_i$ to make features have approximately zero mean (Do not apply to $x_0 = 1$)
+
 \subsubsection{Gradient in Practice II - Learning Rate}
+1. ``Debugging'': how to make sure gradient descent is working correclty. \\
+2. How to choose learning rate $\alpha$. \\
+3. Declare convergence if $J(\theta)$ decreases by less than $10^{-3}$ in one iteration. \\
+
+\textbf{Summary}\\
+1. If $\alpha$ is too small: slow convergence. \\
+2. If $\alpha$ is too large: $J(\theta)$ may not decrease on every iteration; may not converge. \\
+3. To choose $\alpha$, try ..., 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, ... 
+
 \subsubsection{Features and Polynomial Regression}
+$h_\theta(x) = \theta_0 + \theta_1 x + \theta_2 x^2 + \theta_3 x^3$ \\
+
+\newpage
+
 \subsection{Computing Parameters Analytically}
 \subsubsection{Normal Equation}
+$\vect{\theta} \in \mathbb{R}^{n+1} \tab J(\theta_0, \theta_1, ..., \theta_m) = \frac{1}{2m}\sum_{i=1}^{m}(h_\theta(x^{(i)}) - y^{(i)})^2$ \\
+
+$\frac{\partial}{\partial \theta_j}J(\theta) = ... = 0$ (for every j) \\
+
+Solve for $\theta_0, \theta_1, \theta_2, ... ,\theta_n$ \\
+
+m examples $(x^{(1)}, y^{(1)}), ..., (x^{(m)}, y^{(m)})$, n features. \\
+$\vect{x}^{(i)} = \begin{bmatrix}
+x_0^{(i)} \\ x_1^{(i)} \\ x_2^{(i)} \\ \vdots \\ x_n^{(i)}
+\end{bmatrix} \in \mathbb{R}^{n+1}
+\tab
+\vect{X} = \begin{bmatrix}
+(\vect{x}^{(1)})^T \\ (\vect{x}^{(2)})^T \\ (\vect{x}^{(3)})^T\\ \vdots \\ (\vect{x}^{(m)})^T
+\end{bmatrix}
+\tab
+\vect{y} = \begin{bmatrix}
+y^{(1)} \\ y^{(2)} \\ y^{(3)} \\ \vdots \\ y^{(m)}
+\end{bmatrix}
+$\\\\
+
+$\theta = (\vect{X}^T\vect{X})^{-1}\vect{X}^Ty$ \\
+
+
+\begin{center}
+\textbf{Comparison} \\
+\begin{tabular}{ |c c | }
+\hline
+Gradient Descent & Normal Equation \\ 
+\hline
+Need to choose $\alpha$ & No need to choose $\alpha$ \\  
+\hline
+Needs many iterations & Only need to compute $(\vect{X}^T\vect{X})^{-1}$ \\
+\hline
+Works well even when $n$ is large & Slow if $n$ is very large \\
+\hline
+\end{tabular}
+\end{center}
+
 \subsubsection{Normal Equation Non-invertibility}
+What if $(\vect{X}^T\vect{X})^{-1}$ is non-invertible?
+\begin{itemize}
+  \item Redundant features (linearly dependent)
+  \begin{itemize}
+    \item E.g. $x_1$ = size in $feet^2$, $x_2$ = size in $m^2$, $x_1 = 3.28^2 x_2$
+  \end{itemize}
+  \item Too many features (e.g. $m \le n$)
+  \begin{itemize}
+    \item Delete some features, or use regularization
+  \end{itemize}
+\end{itemize}
 
 \section{Logistic Regression}
 \subsection{Classification and Representation}
