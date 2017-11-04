@@ -400,17 +400,68 @@ $\theta = (X^TX + \lambda \begin{bmatrix}
 \subsubsection{Regularized Logistic Regression}
 The same as section 1.1.3.
 
+\newpage
+
 \section{Neural Networks: Representation}
 \subsection{Motivation}
 \subsubsection{Non-linear Hypotheses}
 \subsubsection{Neurons and the Brain}
+Origins: Algorithms that try to mimic the brain. \\
+Was very widely used in 80s and early 90s; Popularity diminished in late 90s. \\
+Recent resurgence: State-of-art techinique for many applications.
+
 \subsection{Neural Networks}
-\subsubsection{Model Representation I}
-\subsubsection{Model Representation II}
-\subsection{Applications}
-\subsubsection{Examples and Intuitions I}
-\subsubsection{Examples and Intuitions II}
-\subsubsection{Multiclass Classification}
+\subsubsection{Model Representation}
+Neuron model: Logisitic unit. \\
+Use Sigmoid (logistic) activation function. \\
+
+$a_i^{(j)} = $ activation of unit i in layer j\\
+$\theta^{(j)} = $ matrix of weights controlling function mapping from layer j to layer j+1.\\
+
+\begin{tikzpicture}
+[   cnode/.style={draw=black,fill=#1,minimum width=3mm,circle},
+]
+    \node[cnode=red,label=0:$h_\theta(x)$] (s) at (6,-3) {};
+    \node at (0,-4) {$\vdots$};
+    \node at (3,-4) {$\vdots$};
+    \foreach \x in {1,...,4}
+    {   \pgfmathparse{\x<4 ? \x : "n"}
+        \node[cnode=blue,label=180:$x_{\pgfmathresult}$] (x-\x) at (0,{-\x-div(\x,4)}) {};
+        \node[cnode=gray,label=90:$a_{\pgfmathresult}^{(2)}$] (p-\x) at (3,{-\x-div(\x,4)}) {};
+        \draw (p-\x) -- node[above,sloped,pos=0.3] {$\omega_{\pgfmathresult}$} (s);
+    }
+    \foreach \x in {1,...,4}
+    {   \foreach \y in {1,...,4}
+        {   \draw (x-\x) -- (p-\y);
+        }
+    }
+\end{tikzpicture}\\
+
+$a_1^{(2)} = g(\Theta^{(1)}_{10} x_0 + \Theta^{(1)}_{11} x_1 + \Theta^{(1)}_{12} x_2 + \Theta^{(1)}_{13} x_3)$ \\
+$a_2^{(2)} = g(\Theta^{(1)}_{20} x_0 + \Theta^{(1)}_{21} x_1 + \Theta^{(1)}_{22} x_2 + \Theta^{(1)}_{23} x_3)$ \\
+$a_3^{(2)} = g(\Theta^{(1)}_{30} x_0 + \Theta^{(1)}_{31} x_1 + \Theta^{(1)}_{32} x_2 + \Theta^{(1)}_{33} x_3)$ \\
+
+$h_\Theta(x) = a_1^{(3)} = g(\Theta^{(2)}_{10} a_0^{(2)} + \Theta^{(2)}_{11} a_1^{(2)} + \Theta^{(2)}_{12} a_2^{(2)} + \Theta^{(2)}_{13} a_3^{(2)})$ \\
+
+If network has $s_j$ units in layer $j$, $s_{j+1}$ units in layer $j+1$, then $\Theta^{(j)}$ will be of dimension $s_{j+1}$ by $s_{j} + 1$. \\
+
+$\vect{x} = 
+\begin{bmatrix}
+x_0 \\ x_1 \\ x_2 \\ \vdots \\ x_n 
+\end{bmatrix}
+\tab
+\vect{z}^{(2)} = 
+\begin{bmatrix}
+\vect{z}^{(2)}_1 \\ \vect{z}^{(2)}_2 \\ \vect{z}^{(2)}_3 \\ \vdots \\ \vect{z}^{(2)}_n 
+\end{bmatrix} \\\\$
+
+$z^{(2)} = \Theta^{(1)}x = \Theta^{(1)} a^{(1)}$\\
+$a^{(2)} = g(z^{(2)})$\\
+
+Add $a_0^{(2)} = 1$.\\
+
+$z^{(3)} = \Theta^{(2)}a^{(2)}$\\
+$h_\theta(x) = a^{(3)} = g(z^{(3)})$
 
 \section{Neural Networks: Learning}
 \subsection{Cost Function and Backpropagation}
