@@ -6,6 +6,8 @@
 \usepackage[]{algorithm2e}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{tikz}
+\usepackage{pgfplots}
 
 \newcommand\tab[1][1cm]{\hspace*{#1}}
 \newcommand{\vect}[1]{\boldsymbol{#1}}
@@ -62,7 +64,7 @@ Outline: \\
 1. Start with some $\theta_0, \theta_1$, (say $\theta_0 = 0, \theta_1 = 0)$ \\
 2. Keep changing $\theta_0, \theta_1$ to reduce $J(\theta_0, \theta_1)$ until we hopefuly end up at a minimum. \\
 
-\textbf{Gradient descent algorithm}\\
+\textbf{Gradient Descent Algorithm}\\
 repeat until convergence \{\\
 $\tab \theta_j := \theta_j - \alpha \frac{\partial}{\partial \theta_j}J(\theta_0, \theta_1) $ (for j = 0, 1)\\
 \}
@@ -80,7 +82,7 @@ $\alpha$ is the learning rate. \\
 \subsubsection{Gradient Descent For Linear Regression}
 \textbf{Linear Regression Model}
 $h_\theta(x) = \theta_0 + \theta_1 x$
-$$J(\theta_0, \theta_1) = \frac{1}{2m} \sum_{i=1}^{m}(h_\theta(x^{(i)}) - y^{(i)})$$
+$$J(\theta_0, \theta_1) = \frac{1}{2m} \sum_{i=1}^{m}(h_\theta(x^{(i)}) - y^{(i)})^2$$
 $$\frac{\partial}{\partial \theta_j}J(\theta_0, \theta_1) = \frac{\partial}{\partial \theta_j} \frac{1}{2m} \sum_{i=1}^{m}(h_\theta(x^{(i)}) - y^{(i)})^2$$
 $$ = \frac{\partial}{\partial \theta_j} \frac{1}{2m} \sum_{i=1}^{m}(\theta_0 + \theta_1 x^{(i)} - y^{(i)})^2$$
 
@@ -202,14 +204,149 @@ What if $(\vect{X}^T\vect{X})^{-1}$ is non-invertible?
 
 \section{Logistic Regression}
 \subsection{Classification and Representation}
+Email: Spam / Not Spam? \\
+Online Transactions: Fraudulent (Yes / No)? \\
+Tumor: Malignant / Benign ? \\
+
+$y \in \{0, 1\}$ 0: ``Negative Class'', 1: ``Positive Class''\\
+$y \in \{0, 1, 2, 3, ...\}$ ...\\
+
+If $h_\theta(x) \ge threshold$, predict ``y = 1''. \\
+If $h_\theta(x) \le threshold$, predict ``y = 0''. \\
+
+Classification: y = 0 or y = 1\\
+$h_\theta(x)$ can be $ > 1$ or $ < 0$
+
+Logistic regression: $0 \le h_\theta(x) \le 1$ 
+
 \subsubsection{Hypothesis Representation}
+Logistic Regression Model: \\
+Want $0 \le h_\theta(x) \le 1$ \\
+$h_\theta(\vect{x}) = g(\vect{\theta}^T \vect{x})$ \\
+g can be Sigmoid function or Logistic function: \\
+$h_\theta(\vect{x}) = \frac{1}{1 + e^{-\vect{\theta}^T \vect{x}}}$ \\
+
+\begin{tikzpicture}
+    \begin{axis}[
+      legend pos=north west,
+        axis x line=middle,
+        axis y line=middle,
+        x tick label style={/pgf/number format/fixed,
+                            /pgf/number format/fixed zerofill,
+                            /pgf/number format/precision=1},
+        y tick label style={/pgf/number format/fixed,
+                            /pgf/number format/fixed zerofill,
+                            /pgf/number format/precision=1},
+        grid = major,
+        width=12cm,
+        height=6cm,
+        grid style={dashed, gray!30},
+        xmin=-1,
+        xmax= 1, 
+        ymin= 0,  
+        ymax= 1,   
+        xlabel=x,
+        ylabel=y,
+        tick align=outside,
+        enlargelimits=false]
+      \addplot[domain=-1:1, red, ultra thick,samples=500] {1/(1+exp(-5*x))};
+      \addplot[domain=-1:1, blue, ultra thick,samples=500] {1/(1+exp(-10*x))};
+      \addlegendentry{$f(x)=\frac{1}{1+e^{-5x}}$}
+      \addlegendentry{$g(x)=\frac{1}{1+e^{-10x}}$}
+    \end{axis}
+\end{tikzpicture}
+
 \subsubsection{Decision Boundary}
+Linear Decision Boundry:\\
+$h_\theta(\vect{x}) = g(\theta_0 + \theta_1 x_1 + \theta_2 x_2)$\\
+Predict ``y=1'' if $-3 + x_1 + x_2 \ge 0$\\
+
+Non-linear Decision Boundry:\\
+$h_\theta(\vect{x}) = g(\theta_0 + \theta_1 x_1 + \theta_2 x_2 + \theta_3 x_1^2 + \theta_4 x_2^2)$\\
+Predict ``y=1'' if $-1 + x_1^2 + x_2^2 \ge 0$\\
+
+
 \subsection{Logistic Regression Model}
 \subsubsection{Cost Function}
+Training set with m examples: $\{(x^{(1)}, y^{(1)}), (x^{(2)}, y^{(2)}), ...,  (x^{(m)}, y^{(m)})\}$\\
+
+With n attributes, $\vect{x} = \begin{bmatrix}
+x_0 \\ x_1 \\ x_2 \\ \vdots \\ x_n 
+\end{bmatrix} \in \mathbb{R}^{n+1}$
+$x_0 = 1, y \in \{0, 1\}$
+
+$h_\theta(\vect{x}) = \frac{1}{1 + e^{-\vect{\theta}^T \vect{x}}}$ \\
+
+\textbf{Logistic regression cost function} \\
+$Cost(h_\theta(x), y)=\left\{
+                \begin{array}{ll}
+                  -log(h_\theta(x)), y = 1\\
+                  -log(1 - h_\theta(x)), y = 0\\
+                \end{array}
+              \right.$
+
+Cost = 0 if $y = 1$, $h_\theta(x) = 1$ \\
+But as $h_\theta(x) \rightarrow 0, cost \rightarrow \infty $
+Captures intuition that if $h_\theta(x) = 0$, but $y = 1$, we will penalize learning algorithm by a very large cost.\\
+
+\newpage
+
 \subsubsection{Simplified Cost Function and Gradient Descent}
+\textbf{Logistic regression cost function} \\
+$Cost(h_\theta(x), y)=\left\{
+                \begin{array}{ll}
+                  -log(h_\theta(x)), y = 1\\
+                  -log(1 - h_\theta(x)), y = 0\\
+                \end{array}
+              \right.$\\
+
+$J(\theta)= \frac{1}{m}\sum_{i=1}^{m} Cost(h_\theta(x^{(i)}), y^{(i)})$ \\
+
+$ = -\frac{1}{m}[ \sum_{i=1}^{m} y^{(i)}log(h_\theta(x^{(i)})) + (1-y^{(i)})log(1 - h_\theta(x^{(i)}))]$\\
+
+To fit parameters $\theta$: \\
+\tab $\arg\min_{\theta} J(\theta)$ \\
+
+To make a prediction given new $\vect{x}$:
+
+\tab Output $h_\theta(\vect{x}) = \frac{1}{1 + e^{-\vect{\theta}^T \vect{x}}}$ \\
+
+$\frac{\partial}{\partial \theta_j}(-log(h_\theta(x^{(i)}))) = (h_\theta(x^{(i)})-1)x^{(i)}$ \\
+$\frac{\partial}{\partial \theta_j}(-log(1 - h_\theta(x))) = -h_\theta(x^{(i)})x^{(i)}$ \\
+
+$\frac{\partial}{\partial \theta_j}[-y^{(i)}(log(h_\theta(x^{(i)})) - (1-y^{(i)})log(1 - h_\theta(x)))]$\\
+$ = y^{(i)}(h_\theta(x^{(i)})-1)x^{(i)} + (1-y^{(i)})h_\theta(x^{(i)})x^{(i)} $\\
+$ = (h_\theta(x^{(i)}) - y^{(i)}) x^{(i)}$\\
+
+Algorithm looks identical to linear regression:\\
+Repeat until convergence \{\\
+\tab $\theta_j := \theta_j - \alpha \sum_{i=1}^{m}(h_\theta(x^{(i)} - y^{(i)})) x_{j}^{(i)}$ (simultaneously update all $\theta_j$) \\
+\}\}\\
+
 \subsubsection{Advanced Optimization}
+Cost function $J(\theta)$. Want $\arg\min_\theta J(\theta)$\\
+Given $\theta$, we have code that can compute $J(\theta)$ and $\frac{\partial}{\partial \theta_j}$ to perform gradient descent.\\
+
+\textbf{Optimization algorithm}
+\begin{itemize}
+  \item Gradient descent
+  \item Conjugate gradient
+  \item BFGS
+  \item L-BFGS
+\end{itemize}
+
+Advantages and disadvantages:
+\begin{itemize}
+  \item + No need to manually pick $\alpha$
+  \item + Often faster than gradient descent
+  \item - More complex
+\end{itemize}
+
 \subsection{Multiclass Classification}
 \subsubsection{Multiclass Classification: One-vs-all}
+Train a logistic regression classifier $h_\theta^{(i)}(x)$ for each class $i$ to predict the probability that $y = i$.\\
+
+On a new input $x$ to make a prediction, pick the class $i$ that maximizes $h_\theta^{(i)}(x)$.
 
 \newpage
 
