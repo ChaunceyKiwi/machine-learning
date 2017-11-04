@@ -353,9 +353,52 @@ On a new input $x$ to make a prediction, pick the class $i$ that maximizes $h_\t
 \section{Regularization}
 \subsection{Solving the Problem of Overfitting}
 \subsubsection{The Problem of Overfitting}
+Overfitting: If we have too many features, the learned hypothesis may fit the training set very well, but fail to generalize to new examples. \\
+
+Options:
+\begin{itemize}
+  \item Reduce number of features
+  \begin{itemize}
+    \item Manually select which features to keep.
+    \item Model selection algorithm
+  \end{itemize}
+  
+  \item Regularization
+  \begin{itemize}
+    \item Keep all the features, but reduce magnitude/value of parameters $\theta_j$.
+    \item Works well when we have a lot of features, each of which contribute a bit to predicting $y$.
+  \end{itemize}
+\end{itemize}
+
 \subsubsection{Cost Function}
+In regularized linear regression, we choose $\theta$ to minimize
+$$J(\theta_0, \theta_1) = \frac{1}{2m}[ \sum_{i=1}^{m}(h_\theta(x^{(i)}) - y^{(i)})^2 + \lambda \sum_{i=1}^n \theta_{j}^2]$$
+
+What if $\lambda$ is set to an extremely large value?
+\begin{itemize}
+  \item Algorithm works fine; setting $\lambda$ to be very large cannot hurt it
+  \item Algorithm fails to eliminate overfitting
+  \item Algorithm results in underfitting (Fails to fit even training set well)
+  \item Gradient descent will fail to converge
+\end{itemize}
+
 \subsubsection{Regularized Linear Regression}
+\textbf{Gradient descent}\\
+Repeat until convergence \{\\
+\tab $\theta_0 := \theta_0 - \alpha \frac{1}{m} \sum_{i=1}^{m}(h_\theta(x^{(i)} - y^{(i)})) x_{0}^{(i)}$ \\
+\tab $\theta_j := \theta_j - \alpha [\frac{1}{m} \sum_{i=1}^{m}(h_\theta(x^{(i)} - y^{(i)})) x_{j}^{(i)} + \frac{\lambda}{m}\theta_j]$ (simultaneously update all $\theta_j$ except $\theta_0$) \\
+\}\}\\
+
+\textbf{Normal equation}\\\\
+$\theta = (X^TX + \lambda \begin{bmatrix}
+    0 & & & \\
+    & 1 & & \\
+    & & \ddots & \\
+    & & & 1
+  \end{bmatrix})^{-1} X^T y$
+
 \subsubsection{Regularized Logistic Regression}
+The same as section 1.1.3.
 
 \section{Neural Networks: Representation}
 \subsection{Motivation}
