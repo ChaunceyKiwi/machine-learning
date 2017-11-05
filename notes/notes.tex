@@ -176,7 +176,7 @@ $\theta = (\vect{X}^T\vect{X})^{-1}\vect{X}^Ty$ \\
 
 \begin{center}
 \textbf{Comparison} \\
-\begin{tabular}{ |c c | }
+\begin{tabular}{ |c | c | }
 \hline
 Gradient Descent & Normal Equation \\ 
 \hline
@@ -575,10 +575,20 @@ Steps:\\
 \section{Advice for Applying Machine Learning}
 \subsection{Evaluating a Learning Algorithm}
 \subsubsection{Deciding What to Try Next}
+Machine learning diagnostic:A test that you can run to gain insight what is / is not working with a learning algorithm and gain guidance as to how to improve its performance.\\
+
+Diagnostics can take time to implement, but doing so can be a very good use of your time.
 \subsubsection{Evaluating a Hypothesis}
+Learn parameter $\theta$ from training data. \\
+Compute test set error. \\
+Misclassification error.
 \subsubsection{Model Selection and Train / Validation / Test Sets}
+Divide data set into training set, cross validation set and test set.
+
 \subsection{Bias vs. Variance}
 \subsubsection{Diagnosing Bias vs. Variance}
+
+
 \subsubsection{Regularization and Bias / Variance}
 \subsubsection{Learning Curves}
 \subsubsection{Deciding What to do Next Revisited}
@@ -587,10 +597,45 @@ Steps:\\
 \subsection{Building a Spam CLassifier}
 \subsubsection{Prioritizing What to Work On}
 \subsubsection{Error Analysis}
+\textbf{Recommended Approach}\\
+1. Start with a simple algorithm that you can implement quickly. Implement it and test it on your cross-validation data. \\
+2. Plot learning curves to decide if more data, more features, etc. Are likely to help. \\
+3. Error analysis: Manually examine the exmaples (in cross validation set) that your algorithm made errors on. See if you spot any systematic trend in that type of exmaples it is making errors on. \\
+
+Error analysis may not be helpful for deciding if this is likely to improve performance. Only solution is to try it and see if it works.
+
 \subsection{Handling Skewed Data}
 \subsubsection{Error Metrics for Skewed Classes}
+\begin{center}
+\textbf{Comparison} \\
+\begin{tabular}{ | c | c | c | }
+\hline
+ & Predicted as positive & Predicted as negative \\ 
+\hline
+Actually positive & True Positive (TP) & False Negative (FN) \\  
+\hline
+Actually negative & False Positive (FP) & True Negative (TN) \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{center}
+Precision = $\frac{TP}{TP + FP}$ \tab Recall = $\frac{TP}{TP + FN}$ \\
+\end{center}
+
 \subsubsection{Trading Off Precision and Recall}
-\subsection{using Large Data Sets}
+Suppose we want to predict $y = 1$ (cancer) only if very confident, there will be high precision and low recall. \\
+Suppose we want to avoid missing too many causes of cancer (avoid false negatives), there will be high recall and low precision. \\
+To compare precision and recall, use $F_1$ score: $2\frac{PR}{P+R}$
+
+\subsection{Using Large Data Sets}
 \subsubsection{Data For Machine Learning}
+\textbf{Large data rationale}\\
+
+Assume features have sufficient information to predict $y$ accurately. A useful test is by asking the question that given the input $x$, can a human expert confidently predict $y$.\\
+
+For large data, use a learning algorithm with many parameters (e.g. logistic regression/linear regression with many features; neural network with many hidden units). \\
+
+Use a very lage training set to prevent overfit.\\
 
 \end{document}
